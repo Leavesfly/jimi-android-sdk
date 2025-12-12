@@ -125,83 +125,111 @@ public class ShoppingAssistantExample {
         @Override
         public java.util.List<Product> searchProducts(String keyword, String category, 
                                                        Double minPrice, Double maxPrice, 
-                                                       Integer limit) {
+                                                       String sortBy, int limit) {
             // 返回模拟商品数据
             java.util.List<Product> products = new java.util.ArrayList<>();
-            products.add(new Product(
-                "P001",
-                "AirPods Pro 蓝牙耳机",
-                "Apple AirPods Pro 主动降噪无线蓝牙耳机",
-                1999.0,
-                "https://example.com/airpods.jpg",
-                "电子产品",
-                150
-            ));
-            products.add(new Product(
-                "P002",
-                "索尼 WH-1000XM5 蓝牙耳机",
-                "索尼降噪无线蓝牙耳机",
-                2499.0,
-                "https://example.com/sony.jpg",
-                "电子产品",
-                80
-            ));
+            
+            Product p1 = Product.builder()
+                .id("P001")
+                .name("AirPods Pro 蓝牙耳机")
+                .description("Apple AirPods Pro 主动降噪无线蓝牙耳机")
+                .price(1999.0)
+                .originalPrice(2399.0)
+                .imageUrl("https://example.com/airpods.jpg")
+                .category("电子产品")
+                .stock(150)
+                .rating(4.8)
+                .sales(5000)
+                .build();
+            products.add(p1);
+            
+            Product p2 = Product.builder()
+                .id("P002")
+                .name("索尼 WH-1000XM5 蓝牙耳机")
+                .description("索尼降噪无线蓝牙耳机")
+                .price(2499.0)
+                .originalPrice(2999.0)
+                .imageUrl("https://example.com/sony.jpg")
+                .category("电子产品")
+                .stock(80)
+                .rating(4.9)
+                .sales(3000)
+                .build();
+            products.add(p2);
+            
             return products;
         }
         
         @Override
-        public Order getOrderById(String orderId) {
-            // 返回模拟订单数据
-            return new Order(
-                orderId,
-                "USER001",
-                Arrays.asList(
-                    new Order.OrderItem("P001", "AirPods Pro 蓝牙耳机", 1, 1999.0)
-                ),
-                1999.0,
-                "已发货",
-                "2025-12-10",
-                "广东省深圳市"
-            );
+        public Product getProductById(String productId) {
+            return Product.builder()
+                .id(productId)
+                .name("测试商品")
+                .price(999.0)
+                .build();
         }
         
         @Override
-        public java.util.List<Order> getOrdersByUserId(String userId, String status, Integer limit) {
-            // 返回模拟订单列表
+        public java.util.List<Order> queryOrders(String status, int limit) {
             java.util.List<Order> orders = new java.util.ArrayList<>();
             orders.add(getOrderById("ORD001"));
             return orders;
         }
         
         @Override
-        public Cart getCartByUserId(String userId) {
-            // 返回模拟购物车
-            return new Cart(
-                "CART001",
-                userId,
-                new java.util.ArrayList<>(),
-                0.0
-            );
+        public Order getOrderById(String orderId) {
+            // 创建订单项
+            Order.OrderItem item = new Order.OrderItem();
+            item.setProductId("P001");
+            item.setProductName("AirPods Pro 蓝牙耳机");
+            item.setQuantity(1);
+            item.setPrice(1999.0);
+            
+            java.util.List<Order.OrderItem> items = new java.util.ArrayList<>();
+            items.add(item);
+            
+            // 创建订单
+            Order order = Order.builder()
+                .id(orderId)
+                .status("shipped")
+                .totalAmount(1999.0)
+                .createTime("2025-12-10")
+                .trackingNumber("SF123456789")
+                .items(items)
+                .build();
+            order.setShippingAddress("广东省深圳市");
+            
+            return order;
         }
         
         @Override
-        public boolean addToCart(String userId, String productId, int quantity) {
-            return true;
+        public Cart getCart() {
+            return new Cart();
         }
         
         @Override
-        public boolean removeFromCart(String userId, String productId) {
-            return true;
+        public Cart addToCart(String productId, int quantity) {
+            Cart cart = new Cart();
+            Cart.CartItem item = Cart.CartItem.create(productId, "测试商品", 999.0, quantity);
+            java.util.List<Cart.CartItem> items = new java.util.ArrayList<>();
+            items.add(item);
+            cart.setItems(items);
+            return cart;
         }
         
         @Override
-        public boolean updateCartItemQuantity(String userId, String productId, int quantity) {
-            return true;
+        public Cart removeFromCart(String productId) {
+            return new Cart();
         }
         
         @Override
-        public boolean clearCart(String userId) {
-            return true;
+        public Cart updateCartQuantity(String productId, int quantity) {
+            Cart cart = new Cart();
+            Cart.CartItem item = Cart.CartItem.create(productId, "测试商品", 999.0, quantity);
+            java.util.List<Cart.CartItem> items = new java.util.ArrayList<>();
+            items.add(item);
+            cart.setItems(items);
+            return cart;
         }
     }
 }
