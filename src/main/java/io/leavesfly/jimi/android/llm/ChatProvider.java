@@ -1,6 +1,7 @@
 package io.leavesfly.jimi.android.llm;
 
 import io.leavesfly.jimi.android.llm.message.Message;
+import io.leavesfly.jimi.android.tool.ToolSchema;
 
 import java.util.List;
 

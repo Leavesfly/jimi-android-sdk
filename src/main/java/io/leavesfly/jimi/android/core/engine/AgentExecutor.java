@@ -149,18 +149,9 @@ public class AgentExecutor {
         List<Message> history = context.getHistory();
         
         // 获取工具 Schema 列表
-        List<io.leavesfly.jimi.android.llm.ToolSchema> tools = null;
+        List<ToolSchema> tools = null;
         if (toolRegistry != null && toolRegistry.size() > 0) {
-            List<io.leavesfly.jimi.android.tool.ToolSchema> toolSchemas = toolRegistry.getToolSchemas(agent.getTools());
-            // 转换 tool.ToolSchema 到 llm.ToolSchema
-            tools = new ArrayList<>();
-            for (io.leavesfly.jimi.android.tool.ToolSchema schema : toolSchemas) {
-                tools.add(new io.leavesfly.jimi.android.llm.ToolSchema(
-                    schema.getName(),
-                    schema.getDescription(),
-                    schema.getParameters()
-                ));
-            }
+            tools = toolRegistry.getToolSchemas(agent.getTools());
         }
         
         // 使用同步回调收集流式响应

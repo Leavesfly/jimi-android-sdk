@@ -85,6 +85,12 @@ public class ToolSchema {
         }
 
         public ToolSchema build() {
+            if (name == null || name.trim().isEmpty()) {
+                throw new IllegalArgumentException("Tool name cannot be null or empty");
+            }
+            if (description == null || description.trim().isEmpty()) {
+                throw new IllegalArgumentException("Tool description cannot be null or empty");
+            }
             return new ToolSchema(name, description, parameters);
         }
     }
